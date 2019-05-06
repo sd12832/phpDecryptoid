@@ -1,0 +1,40 @@
+<?php
+
+# Grabbed from https://www.programmingalgorithms.com/algorithm/simple-substitution-cipher?lang=PHP and
+# modified for this web page.
+
+function Cipher($input, $oldAlphabet, $newAlphabet)
+{
+    $output = "";
+    $inputLen = strlen($input);
+
+    if (strlen($oldAlphabet) != strlen($newAlphabet))
+        return false;
+
+    for ($i = 0; $i < $inputLen; ++$i)
+    {
+        $oldCharIndex = strpos($oldAlphabet, strtolower($input[$i]));
+
+        if ($oldCharIndex !== false)
+            $output .= ctype_upper($input[$i]) ? strtoupper($newAlphabet[$oldCharIndex]) : $newAlphabet[$oldCharIndex];
+        else
+            $output .= $input[$i];
+    }
+
+    return $output;
+}
+
+function SS_Encrypt($input, $cipherAlphabet)
+{
+    $plainAlphabet = "abcdefghijklmnopqrstuvwxyz";
+    $output = Cipher($input, $plainAlphabet, $cipherAlphabet);
+    return $output;
+}
+
+function SS_Decrypt($input, $cipherAlphabet)
+{
+    $plainAlphabet = "abcdefghijklmnopqrstuvwxyz";
+    return Cipher($input, $cipherAlphabet, $plainAlphabet);
+}
+
+?>
