@@ -1,5 +1,12 @@
 <?php
 
+// 1. Check the validity of the encryption methods.
+// 2. Check the database add function.
+// 3. Write the checks for the character alphabets that we are getting from the user.
+// 4. Finish the authentication.php file in terms of the database stuff.
+// 5. Add the login functionality within in terms of the database stuff with login.php
+// 6.
+
 // Credentials for the PHP
 require_once ("php_creds.php");
 // The RC4 cipher
@@ -128,6 +135,11 @@ body {
     <br>
     <input type="submit" name="submit_text" value="Submit Text" />
     
+    <p>If you would like to use a custom cipher alphabet:</p>
+    <textarea name="input_alphabet" rows="2" cols="100"></textarea>
+    <br>
+    <input type="submit" name="submit_alphabet" value="Submit Custom Alphabet" />
+    
     <br><br><br><br>
     <p>Upload Text File Here:
     <input type="file" name='upload_file' id="upload_file">
@@ -147,19 +159,50 @@ function main_crypt($input_text, $option, $encryption_method)
 
     $text = '';
 
-    if($encryption_method == 'Simple Substitution') {
-        if ($option == 'Encrypt') {
-            $text = SS_Encrypt($input_text, 'yhkqgvxfoluapwmtzecjdbsnri');
+    $cipherAlphabetSS = 'yhkqgvxfoluapwmtzecjdbsnri';
+    $cipherAlphabetDT = 'aaaa';
+
+    // Check if there has been an input of an alphabet
+    if(isset($_POST['submit_alphabet'])){
+
+        if($_POST['invalid_alphabet']) {
+            echo '<center>The input alphabet was wrong. Please check the length/characters.<center>'
         } else {
-            $text = SS_Decrypt($input_text, 'yhkqgvxfoluapwmtzecjdbsnri');
+            $cipherAlphabetSS = $_POST['input_alphabet'];
+            $cipherAlphabetDT = $_POST['input_alphabet'];
+            $cipherAlphabetRC4 = $_POST['input_alphabet'];
+        }
+    }
+
+    if($encryption_method == 'Simple Substitution') {
+
+        // All the necessary checks for the input alphabet for SS
+        if (strlen($cipherAlphabetSS) != strlen('yhkqgvxfoluapwmtzecjdbsnri')) {
+            unset($_POST);
+            $_POST['invalid_alphabet'] = 'The length of the Single cipher alphabet needs to be correct';
+            header( "Location: decrypt.php" );
+        }
+
+        if ($option == 'Encrypt') {
+            $text = SS_Encrypt($input_text, $cipherAlphabetSS);
+        } else {
+            $text = SS_Decrypt($input_text, $cipherAlphabetSS);
         }
     } else if($encryption_method == 'Double Transposition') {
+
+        // All the necessary checks for the input alphabet for SS
+
+
         if ($option == 'Encrypt') {
             $text = DT_Encrypt($input_text, 'aaaa');
         } else {
             $text = DT_Decrypt($input_text, 'aaaa');
         }
     } else {
+
+        // All the necessary checks for the input alphabet for SS
+
+
         if ($option == 'Encrypt') {
             $text = RC4_Encrypt($input_text, 'aaaa');
         } else {
